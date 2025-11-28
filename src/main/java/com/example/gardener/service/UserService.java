@@ -1,6 +1,8 @@
 package com.example.gardener.service;
 
+import com.example.gardener.Entities.Preferences;
 import com.example.gardener.Entities.User;
+import com.example.gardener.Repository.PrefRepository;
 import com.example.gardener.Repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -11,9 +13,11 @@ import java.util.Map;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private  final PrefRepository prefRepository;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PrefRepository prefRepository) {
         this.userRepository = userRepository;
+        this.prefRepository = prefRepository;
     }
 
     public List<User> getAllUsers() {
@@ -26,5 +30,17 @@ public class UserService {
             passwordsAndLogins.put(user.getLogin(), user.getPassword());
         }
         return passwordsAndLogins;
+    }
+
+    public User addUser(User user) {
+        return userRepository.save(user);
+    }
+
+    public Preferences addNewPreference(Preferences preferences) {
+        return prefRepository.save(preferences);
+    }
+
+    public User getUserIdByLogin(String login) {
+        return userRepository.findUserIdByLogin(login);
     }
 }

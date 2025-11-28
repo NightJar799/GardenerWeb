@@ -2,19 +2,19 @@
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <title>Форма ввода в HTML5</title>
+    <title>Вход</title>
 </head>
 <body>
 <form method="post" action="/auth">
     <p>
         <label for="email">Email: </label>
-        <input type="email" placeholder="user@mail.ru" id="email" name="email"/>
+        <input type="email" placeholder="user@mail.ru" style="-webkit-text-security: circle" id="email" name="email"/>
     </p>
     <p>
         <label for="password">Password: </label>
-        <input type="text" placeholder="1234567890" id="password" name="password"/>
+        <input type="text" placeholder="1234567890" style="-webkit-text-security: circle" id="password" name="password"/>
     </p>
-    <a href="/">Регистрация нового пользователя</a>
+    <a href="/reg">Регистрация нового пользователя</a>
     <p>
         <button type="submit">Отправить</button>
     </p>

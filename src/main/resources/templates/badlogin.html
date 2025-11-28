@@ -5,14 +5,14 @@
     <title>Форма ввода в HTML5</title>
 </head>
 <body>
-<form>
+<form method="post" action="/auth">
     <p>
         <label for="email">Email: </label>
-        <input type="email" placeholder="user@mail.ru" id="email" name="email"/>
+        <input type="email" placeholder="user@mail.ru" style="-webkit-text-security: circle" id="email" name="email"/>
     </p>
     <p>
         <label for="password">Password: </label>
-        <input type="text" placeholder="1234567890" id="password" name="password"/>
+        <input type="text" placeholder="1234567890" style="-webkit-text-security: circle" id="password" name="password"/>
     </p>
     <p style="color: red">Wrong try again!</p>
     <p>

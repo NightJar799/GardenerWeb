@@ -16,11 +16,19 @@ public class User {
     @Column(name = "password", unique = true, nullable = false, length = 100)
     private String password;
 
+    @Column(name = "nickname", unique = false, nullable = false, length = 30)
+    private String nickName;
+
+    @Column(name = "phone", unique = true, nullable = false, length = 15)
+    private String phone;
+
     public User() {}
 
-    public User(String login, String password) {
+    public User(String login, String password, String nickName, String phone) {
         this.login = login;
         this.password = password;
+        this.nickName = nickName;
+        this.phone = phone;
     }
 
     public Integer getId() { return id; }
@@ -32,4 +40,19 @@ public class User {
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
 
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 }
