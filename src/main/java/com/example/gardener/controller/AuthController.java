@@ -25,7 +25,7 @@ public class AuthController {
 
     @GetMapping("/auth")
     public String homePage() {
-        log.debug("Отображение главной страницы");
+        log.debug("Отображение главной аутенфикации");
         return "index";
     }
 

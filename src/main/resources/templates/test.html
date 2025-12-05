@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <title>Test for new user!</title>
 </head>
 <body>
 <form method="post" action="/test">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
     <h2>Choose climate type</h2>
     <p><input type="radio" value="tropical" checked name="climate"/>tropical</p>
     <p><input type="radio" value="dry" name="climate"/>dry</p>

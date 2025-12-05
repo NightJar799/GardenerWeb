@@ -26,7 +26,7 @@ public class PlantListController {
         this.userService = userService;
     }
 
-    @GetMapping("/")
+    @GetMapping("/main")
     public String listPlantsGet(@CookieValue(value = "email") String email, @CookieValue(value = "id") String id,
                                 HttpServletResponse response) {
         System.out.println("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
@@ -58,6 +58,6 @@ public class PlantListController {
         if (space.equals("more")) space = String.valueOf(Integer.MAX_VALUE);
         Preferences preferences = new Preferences(user, climate, soil, Integer.parseInt(space), water, landscape);
         userService.addNewPreference(preferences);
-        return "redirect:/";
+        return "redirect:/main";
     }
 }

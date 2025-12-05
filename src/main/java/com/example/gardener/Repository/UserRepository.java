@@ -14,7 +14,6 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer>{
     @Query(nativeQuery = true,
-    value = "SELECT id, login, phone, nickname, password FROM grd.users WHERE users.login = :login")
+    value = "SELECT id, login, phone, nickname, password, role_of_user FROM grd.users WHERE users.login = :login")
     User findUserIdByLogin(@Param("login") String login);
-
 }
