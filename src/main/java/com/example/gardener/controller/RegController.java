@@ -1,12 +1,15 @@
 package com.example.gardener.controller;
 
+import com.example.gardener.DTO.RegisterDTO;
 import com.example.gardener.Entities.User;
 import com.example.gardener.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -26,24 +29,21 @@ public class RegController {
     }
 
     @GetMapping("/reg")
-    public String regPage() {
+    public String regPage(Model model) {
+        model.addAttribute("reg", new RegisterDTO());
         log.debug("Отображение страницы регистрации");
         return "registry";
     }
 
     @PostMapping("/reg")
-    public String registry(@RequestParam String email, @RequestParam String password, @RequestParam String passwordCheck,
-                           @RequestParam String phone, @RequestParam(required = false) String nickname) {
+    public String registry(@ModelAttribute RegisterDTO registerDTO, Model model) {
         log.debug("Попытка Регистрации");
-        if (!password.equals(passwordCheck)) {
-            return "BadPasswords";
+        if (!registerDTO.getPassword().equals(registerDTO.getPasswordCheck())) {
+            model.addAttribute("passwordError", true);
+            return "registry";
         }
-        List<User> users = userService.getAllUsers();
-        for (User user : users) if (user.getLogin().equals(email) || user.getPhone().equals(phone)) return "BadLoginReg";
-        if (nickname == null) nickname = email.substring(0, email.indexOf("@"));
-        User addedUser = new User(email, password, nickname, phone);
-        redisTemplate.opsForList().leftPush("newUsers", email);
-        System.out.println(userService.addUser(addedUser));
+        redisTemplate.opsForList().leftPush("newUsers", registerDTO.getEmail());
+        System.out.println(userService.addUser(userService.mapRegToEntity(registerDTO)));
         log.debug("Попытка Регистрации успешна");
         return "redirect:/auth";
     }

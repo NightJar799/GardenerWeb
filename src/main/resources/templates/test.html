@@ -1,44 +1,109 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="ru" xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="utf-8">-->
+<!--    <title>Test for new user!</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<form method="post" action="/test">-->
+<!--    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">-->
+<!--    <h2>Choose climate type</h2>-->
+<!--    <p><input type="radio" value="tropical" checked name="climate"/>tropical</p>-->
+<!--    <p><input type="radio" value="dry" name="climate"/>dry</p>-->
+<!--    <p><input type="radio" value="temperate" name="climate"/>temperate</p>-->
+<!--    <p><input type="radio" value="continental" name="climate"/>continental</p>-->
+<!--    <p><input type="radio" value="polar" name="climate"/>polar</p>-->
+<!--    <h2>Choose soil type</h2>-->
+<!--    <p><input type="radio" value="sandy" checked name="soil"/>sandy</p>-->
+<!--    <p><input type="radio" value="peaty" name="soil"/>peaty</p>-->
+<!--    <p><input type="radio" value="loamy" name="soil"/>loamy</p>-->
+<!--    <p><input type="radio" value="silty" name="soil"/>silty</p>-->
+<!--    <p><input type="radio" value="clay" name="soil"/>clay</p>-->
+<!--    <p><input type="radio" value="chalky" name="soil"/>chalky</p>-->
+<!--    <h2>Choose space capacity in square centimeters</h2>-->
+<!--    <p><input type="radio" value="10" checked name="space"/>10</p>-->
+<!--    <p><input type="radio" value="25" name="space"/>25</p>-->
+<!--    <p><input type="radio" value="50" name="space"/>50</p>-->
+<!--    <p><input type="radio" value="100" name="space"/>100</p>-->
+<!--    <p><input type="radio" value="250" name="space"/>250</p>-->
+<!--    <p><input type="radio" value="more" name="space"/>more</p>-->
+<!--    <h2>Choose water capacity</h2>-->
+<!--    <p><input type="radio" value="none" checked name="water"/>none</p>-->
+<!--    <p><input type="radio" value="lake" name="water"/>lake</p>-->
+<!--    <p><input type="radio" value="river" name="water"/>river</p>-->
+<!--    <p><input type="radio" value="sea/ocean" name="water"/>sea/ocean</p>-->
+<!--    <h2>Choose landscape</h2>-->
+<!--    <p><input type="radio" value="mountain" checked name="landscape"/>mountain</p>-->
+<!--    <p><input type="radio" value="forest" name="landscape"/>forest</p>-->
+<!--    <p><input type="radio" value="steppe" name="landscape"/>steppe</p>-->
+<!--    <p><input type="radio" value="tundra" name="landscape"/>tundra</p>-->
+<!--    <p><input type="radio" value="sandy" name="landscape"/>sandy</p>-->
+<!--    <p><input type="radio" value="hilly" name="landscape"/>hilly</p>-->
+<!--    <p><button type="submit">Отправить</button></p>-->
+<!--</form>-->
+<!--</body>-->
+<!--</html>-->
+
 <!DOCTYPE html>
-<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<html lang="ru" xmlns:th="http://www.thymyleaf.org">
 <head>
     <meta charset="utf-8">
     <title>Test for new user!</title>
 </head>
 <body>
-<form method="post" action="/test">
+<form method="post" action="/test" th:object="${test}">
     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
     <h2>Choose climate type</h2>
-    <p><input type="radio" value="tropical" checked name="climate"/>tropical</p>
-    <p><input type="radio" value="dry" name="climate"/>dry</p>
-    <p><input type="radio" value="temperate" name="climate"/>temperate</p>
-    <p><input type="radio" value="continental" name="climate"/>continental</p>
-    <p><input type="radio" value="polar" name="climate"/>polar</p>
+    <div th:each="climateOption : ${T(com.example.gardener.DTO.TestDTO).getClimateOptions()}">
+        <p>
+            <input type="radio" th:value="${climateOption}"
+                   th:field="*{climate}"
+                   th:id="${'climate_' + climateOption}"/>
+            <label th:for="${'climate_' + climateOption}" th:text="${climateOption}"></label>
+        </p>
+    </div>
+
     <h2>Choose soil type</h2>
-    <p><input type="radio" value="sandy" checked name="soil"/>sandy</p>
-    <p><input type="radio" value="peaty" name="soil"/>peaty</p>
-    <p><input type="radio" value="loamy" name="soil"/>loamy</p>
-    <p><input type="radio" value="silty" name="soil"/>silty</p>
-    <p><input type="radio" value="clay" name="soil"/>clay</p>
-    <p><input type="radio" value="chalky" name="soil"/>chalky</p>
+    <div th:each="soilOption : ${T(com.example.gardener.DTO.TestDTO).getSoilOptions()}">
+        <p>
+            <input type="radio" th:value="${soilOption}"
+                   th:field="*{soil}"
+                   th:id="${'soil_' + soilOption}"/>
+            <label th:for="${'soil_' + soilOption}" th:text="${soilOption}"></label>
+        </p>
+    </div>
+
     <h2>Choose space capacity in square centimeters</h2>
-    <p><input type="radio" value="10" checked name="space"/>10</p>
-    <p><input type="radio" value="25" name="space"/>25</p>
-    <p><input type="radio" value="50" name="space"/>50</p>
-    <p><input type="radio" value="100" name="space"/>100</p>
-    <p><input type="radio" value="250" name="space"/>250</p>
-    <p><input type="radio" value="more" name="space"/>more</p>
+    <div th:each="spaceOption : ${T(com.example.gardener.DTO.TestDTO).getSpaceOptions()}">
+        <p>
+            <input type="radio" th:value="${spaceOption}"
+                   th:field="*{space}"
+                   th:id="${'space_' + spaceOption}"/>
+            <label th:for="${'space_' + spaceOption}" th:text="${spaceOption}"></label>
+        </p>
+    </div>
+
     <h2>Choose water capacity</h2>
-    <p><input type="radio" value="none" checked name="water"/>none</p>
-    <p><input type="radio" value="lake" name="water"/>lake</p>
-    <p><input type="radio" value="river" name="water"/>river</p>
-    <p><input type="radio" value="sea/ocean" name="water"/>sea/ocean</p>
+    <div th:each="waterOption : ${T(com.example.gardener.DTO.TestDTO).getWaterOptions()}">
+        <p>
+            <input type="radio" th:value="${waterOption}"
+                   th:field="*{water}"
+                   th:id="${'water_' + waterOption}"/>
+            <label th:for="${'water_' + waterOption}" th:text="${waterOption}"></label>
+        </p>
+    </div>
+
     <h2>Choose landscape</h2>
-    <p><input type="radio" value="mountain" checked name="landscape"/>mountain</p>
-    <p><input type="radio" value="forest" name="landscape"/>forest</p>
-    <p><input type="radio" value="steppe" name="landscape"/>steppe</p>
-    <p><input type="radio" value="tundra" name="landscape"/>tundra</p>
-    <p><input type="radio" value="sandy" name="landscape"/>sandy</p>
-    <p><input type="radio" value="hilly" name="landscape"/>hilly</p>
+    <div th:each="landscapeOption : ${T(com.example.gardener.DTO.TestDTO).getLandscapeOptions()}">
+        <p>
+            <input type="radio" th:value="${landscapeOption}"
+                   th:field="*{landScape}"
+                   th:id="${'landscape_' + landscapeOption}"/>
+            <label th:for="${'landscape_' + landscapeOption}" th:text="${landscapeOption}"></label>
+        </p>
+    </div>
+
     <p><button type="submit">Отправить</button></p>
 </form>
 </body>

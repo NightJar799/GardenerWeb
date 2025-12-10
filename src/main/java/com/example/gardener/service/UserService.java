@@ -1,9 +1,11 @@
 package com.example.gardener.service;
 
+import com.example.gardener.DTO.RegisterDTO;
 import com.example.gardener.Entities.Preferences;
 import com.example.gardener.Entities.User;
 import com.example.gardener.Repository.PrefRepository;
 import com.example.gardener.Repository.UserRepository;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -19,10 +22,12 @@ public class UserService {
 
     private final UserRepository userRepository;
     private  final PrefRepository prefRepository;
+    private final EntityManager entityManager;
 
-    public UserService(UserRepository userRepository, PrefRepository prefRepository) {
+    public UserService(UserRepository userRepository, PrefRepository prefRepository, EntityManager entityManager) {
         this.userRepository = userRepository;
         this.prefRepository = prefRepository;
+        this.entityManager = entityManager;
     }
 
     public List<User> getAllUsers() {
@@ -43,10 +48,20 @@ public class UserService {
     }
 
     public Preferences addNewPreference(Preferences preferences) {
-        return prefRepository.save(preferences);
+        return entityManager.merge(preferences);
     }
 
     public User getUserIdByLogin(String login) {
         return userRepository.findUserIdByLogin(login);
+    }
+    public User getUserByNickname(String name) {
+        return userRepository.findUserByName(name);
+    }
+
+    public User mapRegToEntity(RegisterDTO registerDTO) {
+        return new User(registerDTO.getEmail(),
+                registerDTO.getPassword(),
+                registerDTO.getNickname(),
+                registerDTO.getPhone());
     }
 }
