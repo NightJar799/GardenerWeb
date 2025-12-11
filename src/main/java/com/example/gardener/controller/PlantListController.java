@@ -1,8 +1,10 @@
 package com.example.gardener.controller;
 
+import com.example.gardener.DTO.PlantListDTO;
 import com.example.gardener.DTO.TestDTO;
 import com.example.gardener.Entities.Preferences;
 import com.example.gardener.Entities.User;
+import com.example.gardener.service.PlantService;
 import com.example.gardener.service.PreferencesService;
 import com.example.gardener.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Slf4j
@@ -23,24 +26,47 @@ public class PlantListController {
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
-    private final UserService userService;
     private final PreferencesService preferencesService;
+    private final PlantService plantService;
 
-    public PlantListController(UserService userService, PreferencesService preferencesService) {
-        this.userService = userService;
+    public PlantListController(PreferencesService preferencesService, PlantService plantService) {
         this.preferencesService = preferencesService;
+        this.plantService = plantService;
     }
 
     @GetMapping("/main")
-    public String listPlantsGet(HttpSession httpSession,
+    public String listPlantsGet(@RequestParam(required = false, defaultValue = "none") String sortBy,
+                                HttpSession httpSession,
                                 Model model, HttpServletResponse response) {
         log.info("получаем главную страницу");
         User user = (User) httpSession.getAttribute("user");
         log.info(user.getLogin());
         if (user.getLogin() == null) return "redirect:/auth";
         if (redisTemplate.opsForList().indexOf("newUsers", user.getLogin()) == null) {
-            log.info("URYAAAAAAAAAAAAAAAA");
-            model.addAttribute("worker", userService.getUserIdByLogin(user.getLogin()));
+            List<PlantListDTO> plants = plantService.getPlantAllForListDTO();
+            switch (sortBy) {
+                case "name_asc":
+                    plants.sort(Comparator.comparing(PlantListDTO::getName));
+                    break;
+                case "name_desc":
+                    plants.sort(Comparator.comparing(PlantListDTO::getName).reversed());
+                    break;
+                case "space_asc":
+                    plants.sort(Comparator.comparing(PlantListDTO::getSpace));
+                    break;
+                case "space_desc":
+                    plants.sort(Comparator.comparing(PlantListDTO::getSpace).reversed());
+                    break;
+                case "climate_asc":
+                    plants.sort(Comparator.comparing(PlantListDTO::getClimate));
+                    break;
+                case "climate_desc":
+                    plants.sort(Comparator.comparing(PlantListDTO::getClimate).reversed());
+                    break;
+            }
+
+            model.addAttribute("plantList", plants);
+
             return "mainGarden";
         } else {
             redisTemplate.opsForList().remove("newUsers",1,user.getLogin());//(redisTemplate.opsForList().indexOf("newUsers", email),0, );

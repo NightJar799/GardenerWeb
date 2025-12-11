@@ -35,10 +35,19 @@ public class Growth {
     @Column(name = "growth_speed", nullable = false, length = 5)
     private String growthSpeed;
 
+    @Column(name = "climate", length = 20)
+    private String climate;
+
+    @Column(name = "water", length = 20)
+    private String water;
+
+    @Column(name = "landscape", length = 20)
+    private String landScape;
+
     public Growth() {}
 
     public Growth(Plant plant, String ppfd, Double humidity, Double ph, Integer space,
-                  String soil, String survivability, String growthSpeed) {
+                  String soil, String survivability, String growthSpeed, String climate, String water, String landScape) {
         this.plant = plant;
         this.ppfd = ppfd;
         this.humidity = humidity;
@@ -47,6 +56,9 @@ public class Growth {
         this.soil = soil;
         this.survivability = survivability;
         this.growthSpeed = growthSpeed;
+        this.climate = climate;
+        this.water = water;
+        this.landScape = landScape;
     }
 
     public Plant getPlant() { return plant; }
@@ -81,4 +93,27 @@ public class Growth {
         this.id = id;
     }
 
+    public String getClimate() {
+        return climate;
+    }
+
+    public void setClimate(String climate) {
+        this.climate = climate;
+    }
+
+    public String getWater() {
+        return water;
+    }
+
+    public void setWater(String water) {
+        this.water = water;
+    }
+
+    public String getLandScape() {
+        return landScape;
+    }
+
+    public void setLandScape(String landScape) {
+        this.landScape = landScape;
+    }
 }

@@ -1,11 +1,68 @@
 <!DOCTYPE html>
-<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Garden list</title>
+    <title>Plant List</title>
 </head>
 <body>
-<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+<div style="margin-bottom: 20px;">
+    <a th:href="@{/user}" th:if="${session.user != null}">
+        User Page
+    </a>
+    <a href="#" th:unless="${plantList != null and !plantList.isEmpty()}">Back to User Page</a>
+</div>
 
+<h1>Plant List</h1>
+<a th:href="@{/main}">Clear Sort</a>
+
+<table border="1" cellpadding="10" cellspacing="0" style="width: 100%; border-collapse: collapse;">
+    <thead>
+    <tr>
+        <th>
+            <a th:href="@{/main(sortBy='name_asc')}">Name ↑</a> /
+            <a th:href="@{/main(sortBy='name_desc')}">↓</a>
+        </th>
+        <th>Scientific Name</th>
+        <th>
+            <a th:href="@{/main(sortBy='climate_asc')}">Climate ↑</a> /
+            <a th:href="@{/main(sortBy='climate_desc')}">↓</a>
+        </th>
+        <th>
+            <a th:href="@{/main(sortBy='soil_asc')}">Soil ↑</a> /
+            <a th:href="@{/main(sortBy='soil_desc')}">↓</a>
+        </th>
+        <th>
+            <a th:href="@{/main(sortBy='space_asc')}">Space ↑</a> /
+            <a th:href="@{/main(sortBy='space_desc')}">↓</a>
+        </th>
+        <th>
+            <a th:href="@{/main(sortBy='water_asc')}">Water ↑</a> /
+            <a th:href="@{/main(sortBy='water_desc')}">↓</a>
+        </th>
+        <th>
+            <a th:href="@{/main(sortBy='landScape_asc')}">Landscape ↑</a> /
+            <a th:href="@{/main(sortBy='landScape_desc')}">↓</a>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="plant : ${plantList}" th:if="${plantList != null and !plantList.isEmpty()}">
+        <td>
+            <a th:href="@{/plant/{id}(id=${plant.plantId})}" th:text="${plant.name}">Plant Name</a>
+        </td>
+        <td>
+            <span th:text="${plant.scientificName ?: 'N/A'}">Scientific Name</span>
+        </td>
+        <td th:text="${plant.climate}">Climate</td>
+        <td th:text="${plant.soil}">Soil</td>
+        <td th:text="${plant.space}">Space</td>
+        <td th:text="${plant.water}">Water</td>
+        <td th:text="${plant.landScape}">Landscape</td>
+    </tr>
+    <tr th:if="${plantList == null or plantList.isEmpty()}">
+        <td colspan="8" style="text-align: center;">No plants found</td>
+    </tr>
+    </tbody>
+</table>
 </body>
 </html>

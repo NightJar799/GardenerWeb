@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${user.nickname ?: 'User Profile'}">User Profile</title>
+</head>
+<body>
+<!-- Navigation -->
+<div style="margin-bottom: 20px;">
+    <a th:href="@{/}">Home</a>
+    |
+    <a th:href="@{/plants}">Plant List</a>
+    <span th:if="${session.user != null and session.user.authorities.?[authority == 'ROLE_ADMIN'].size() > 0}">
+            |
+            <a th:href="@{/admin}">Admin Panel</a>
+        </span>
+</div>
+
+<h1>User Profile</h1>
+
+<!-- User Information -->
+<div style="margin-bottom: 30px; padding: 20px;">
+    <h2>Account Information</h2>
+    <table>
+        <tr>
+            <td>Email:</td>
+            <td th:text="${user.email}">email@example.com</td>
+        </tr>
+        <tr>
+            <td>Nickname:</td>
+            <td th:text="${user.nickname}">Nickname</td>
+        </tr>
+        <tr>
+            <td>Total Favorites:</td>
+            <td th:text="${user.favorite != null ? user.favorite.size() : 0}">0</td>
+        </tr>
+    </table>
+</div>
+
+<!-- Recommended Plant -->
+<div th:if="${user.plant != null}" style="margin-bottom: 30px; padding: 20px;">
+    <h2 style="color: #2e7d32;">🌟 Recommended Plant for You</h2>
+    <p>Based on your preferences and favorites, we recommend this plant:</p>
+    <div style="padding: 15px; background-color: white; border: 1px solid #c8e6c9;">
+        <h3>
+            <a th:href="@{/plant/{id}(id=${user.plant})}"
+               style="color: #2e7d32; text-decoration: none;">
+                View Recommended Plant #<span th:text="${user.plant}"></span>
+            </a>
+        </h3>
+        <p>This plant best matches your preferences and favorite plants!</p>
+    </div>
+</div>
+<div th:unless="${user.plant != null}" style="margin-bottom: 30px; padding: 20px; border: 1px solid #ff9800; background-color: #fff3e0;">
+    <h2 style="color: #ef6c00;">No Recommended Plant Yet</h2>
+    <p>Add some plants to your favorites or update your preferences to get a personalized recommendation!</p>
+</div>
+
+<!-- User's Favorite Plants -->
+<div style="margin-bottom: 30px;">
+    <h2>My Favorite Plants</h2>
+
+    <div th:if="${user.favorite != null and !user.favorite.isEmpty()}">
+        <table border="1" cellpadding="10" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+            <thead>
+            <tr style="background-color: #f5f5f5;">
+                <th>Plant ID</th>
+                <th>Plant Name</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="plantId : ${user.favorite}">
+                <td th:text="${plantId}">1</td>
+                <td>
+                    <a th:href="@{/plant/{id}(id=${plantId})}"
+                       style="color: #2196F3; text-decoration: none;">
+                        View Plant #<span th:text="${plantId}"></span>
+                    </a>
+                </td>
+                <td>
+                    <form th:action="@{/favorite/remove}" method="post" style="display: inline;">
+                        <input type="hidden" name="plantId" th:value="${plantId}">
+                        <input type="hidden" name="userId" th:value="${session.user.id}">
+                        <button type="submit"
+                                style="padding: 5px 10px; background-color: #f44336; color: white; border: none; cursor: pointer; border-radius: 3px;"
+                                onclick="return confirm('Remove this plant from favorites?');">
+                            Remove
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <p style="margin-top: 10px; color: #666;">
+            Total favorites: <span th:text="${user.favorite.size()}">0</span>
+        </p>
+    </div>
+
+    <div th:if="${user.favorite == null or user.favorite.isEmpty()}" style="padding: 20px; background-color: #f5f5f5; border: 1px dashed #ccc;">
+        <p>You haven't added any plants to favorites yet.</p>
+        <p><a th:href="@{/plants}">Browse plants</a> to add them to your favorites.</p>
+    </div>
+</div>
+
+<!-- User Preferences (Editable) -->
+<div style="margin-bottom: 30px; padding: 20px;">
+    <h2 style="color: #1565c0;">My Garden Preferences</h2>
+
+    <form th:action="@{/user/preferences/update}" method="post">
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+            <tr>
+                <td style="padding: 10px; width: 200px;"><strong>Climate:</strong></td>
+                <td style="padding: 10px;">
+                    <select name="climate" style="width: 100%; padding: 8px;">
+                        <option value="">Select Climate</option>
+                        <option th:each="option : ${T(com.example.gardener.DTO.UserPageDTO).getClimateOptions()}"
+                                th:value="${option}"
+                                th:text="${option}"
+                                th:selected="${user.climate == option}">
+                        </option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 10px;"><strong>Soil Type:</strong></td>
+                <td style="padding: 10px;">
+                    <select name="soil" style="width: 100%; padding: 8px;">
+                        <option value="">Select Soil Type</option>
+                        <option th:each="option : ${T(com.example.gardener.DTO.UserPageDTO).getSoilOptions()}"
+                                th:value="${option}"
+                                th:text="${option}"
+                                th:selected="${user.soil == option}">
+                        </option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 10px;"><strong>Available Space (m²):</strong></td>
+                <td style="padding: 10px;">
+                    <select name="space" style="width: 100%; padding: 8px;">
+                        <option value="">Select Space</option>
+                        <option th:each="option : ${T(com.example.gardener.DTO.UserPageDTO).getSpaceOptions()}"
+                                th:value="${option}"
+                                th:text="${option}"
+                                th:selected="${user.space == option}">
+                        </option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 10px;"><strong>Water Source:</strong></td>
+                <td style="padding: 10px;">
+                    <select name="water" style="width: 100%; padding: 8px;">
+                        <option value="">Select Water Source</option>
+                        <option th:each="option : ${T(com.example.gardener.DTO.UserPageDTO).getWaterOptions()}"
+                                th:value="${option}"
+                                th:text="${option}"
+                                th:selected="${user.water == option}">
+                        </option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 10px;"><strong>Landscape:</strong></td>
+                <td style="padding: 10px;">
+                    <select name="landScape" style="width: 100%; padding: 8px;">
+                        <option value="">Select Landscape</option>
+                        <option th:each="option : ${T(com.example.gardener.DTO.UserPageDTO).getLandscapeOptions()}"
+                                th:value="${option}"
+                                th:text="${option}"
+                                th:selected="${user.landScape == option}">
+                        </option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+
+        <div style="text-align: center;">
+            <button type="submit"
+                    style="padding: 10px 20px; background-color: #2196F3; color: white; border: none; cursor: pointer; font-size: 16px; border-radius: 4px;">
+                💾 Update Preferences
+            </button>
+            <button type="reset"
+                    style="padding: 10px 20px; background-color: #757575; color: white; border: none; cursor: pointer; margin-left: 10px; border-radius: 4px;">
+                Reset Changes
+            </button>
+        </div>
+    </form>
+
+    <!-- Current Preferences Summary -->
+    <div th:if="${user.climate != null or user.soil != null or user.space != null or user.water != null or user.landScape != null}"
+         style="margin-top: 20px; padding: 15px; background-color: #bbdefb; border: 1px solid #90caf9;">
+        <h3>Current Preferences:</h3>
+        <table style="border-collapse: collapse;">
+            <tr th:if="${user.climate != null}">
+                <td style="padding: 5px; font-weight: bold;">Climate:</td>
+                <td style="padding: 5px;" th:text="${user.climate}">-</td>
+            </tr>
+            <tr th:if="${user.soil != null}">
+                <td style="padding: 5px; font-weight: bold;">Soil:</td>
+                <td style="padding: 5px;" th:text="${user.soil}">-</td>
+            </tr>
+            <tr th:if="${user.space != null}">
+                <td style="padding: 5px; font-weight: bold;">Space:</td>
+                <td style="padding: 5px;" th:text="${user.space}">m²</td>
+            </tr>
+            <tr th:if="${user.water != null}">
+                <td style="padding: 5px; font-weight: bold;">Water Source:</td>
+                <td style="padding: 5px;" th:text="${user.water}">-</td>
+            </tr>
+            <tr th:if="${user.landScape != null}">
+                <td style="padding: 5px; font-weight: bold;">Landscape:</td>
+                <td style="padding: 5px;" th:text="${user.landScape}">-</td>
+            </tr>
+        </table>
+    </div>
+</div>
+</body>
+</html>

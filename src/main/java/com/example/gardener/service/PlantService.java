@@ -1,10 +1,14 @@
 package com.example.gardener.service;
 
+import com.example.gardener.DTO.PlantDTO;
+import com.example.gardener.DTO.PlantListDTO;
 import com.example.gardener.Entities.*;
 import com.example.gardener.Repository.*;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,25 +31,36 @@ public class PlantService {
         this.prefRepository = prefRepository;
     }
 
-    private Growth addGrowth (Growth growth) {return growthRepository.save(growth);}
-    private BioChar addBioChar (BioChar bioChar) {return bioCharRepository.save(bioChar);}
-    public Plant addPlant(Plant plant) {
-        return plantRepository.save(plant);
-    }
-    public Preferences addPref(Preferences preferences) {
-        return prefRepository.save(preferences);
-    }
-    public User addUser(User user) {
-        return userRepository.save(user);
+    public PlantListDTO mapPlantListDTO(Growth growth, Plant plant) {
+        return new PlantListDTO(plant.getId(), plant.getName(), plant.getScienceName(), growth.getClimate(), growth.getSoil(),
+                growth.getSpace(), growth.getWater(), growth.getLandScape());
     }
 
-    public User findUserByID(Integer id) {
-        return userRepository.getById(id);
+    private Plant getPlantFromList(Integer id, List<Plant> plants) {
+        for (Plant plant : plants) if (plant.getId() == id) return plant;
+        return null;
     }
 
+    private PlantDTO mapToPlantDTO(Plant plant, Growth growth, BioChar bioChar){
+        return new PlantDTO(plant.getId(), bioChar.getLeafType(), bioChar.getRoot(), bioChar.getFruit(), bioChar.getAmmFruit(),
+                bioChar.getMorphology(), growth.getPpfd(), growth.getHumidity(), growth.getPh(), growth.getSpace(),
+                growth.getSoil(), growth.getSurvivability(), growth.getGrowthSpeed(), growth.getClimate(), growth.getWater(),
+                growth.getLandScape(), plant.getName(), plant.getScienceName(), plant.getDescription());
+    }
 
-    public List<Plant> getAllPlants() {
-        return plantRepository.findAll();
+    public PlantDTO getPlantDTO(Integer id) {
+    return mapToPlantDTO(plantRepository.getReferenceById(id) , growthRepository.getReferenceById(id), bioCharRepository.getReferenceById(id));
+    }
+
+    public List<PlantListDTO> getPlantAllForListDTO() {
+        List<Growth> growthChar = growthRepository.findAll();
+        List<Plant> plantList = plantRepository.findAll();
+        List<PlantListDTO> plantListDTOS = new ArrayList<>();
+
+        for (Growth growth : growthChar) {
+            plantListDTOS.add(mapPlantListDTO(growth, Objects.requireNonNull(getPlantFromList(growth.getId(), plantList))));
+        }
+        return plantListDTOS;
     }
 
 }
