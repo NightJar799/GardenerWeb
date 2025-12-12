@@ -13,7 +13,7 @@ public class PlantDTO {
     private String leafType;
     private String root;
     private String fruit;
-    private Character ammFruit;
+    private String ammFruit;
     private String morphology;
     private String ppfd;
     private Double humidity;

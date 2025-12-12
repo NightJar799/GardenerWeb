@@ -5,19 +5,13 @@ import com.example.gardener.DTO.UserPageDTO;
 import com.example.gardener.Entities.Favorite;
 import com.example.gardener.Entities.Preferences;
 import com.example.gardener.Entities.User;
-import com.example.gardener.Repository.FavoriteRepository;
-import com.example.gardener.Repository.GrowthRepository;
-import com.example.gardener.Repository.PrefRepository;
-import com.example.gardener.Repository.UserRepository;
+import com.example.gardener.Repository.*;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -29,13 +23,15 @@ public class UserService {
     private final EntityManager entityManager;
     private final FavoriteRepository favoriteRepository;
     private final GrowthRepository growthRepository;
+    private final PlantRepository plantRepository;
 
-    public UserService(UserRepository userRepository, PrefRepository prefRepository, EntityManager entityManager, FavoriteRepository favoriteRepository, GrowthRepository growthRepository) {
+    public UserService(UserRepository userRepository, PrefRepository prefRepository, EntityManager entityManager, FavoriteRepository favoriteRepository, GrowthRepository growthRepository, PlantRepository plantRepository) {
         this.userRepository = userRepository;
         this.prefRepository = prefRepository;
         this.entityManager = entityManager;
         this.favoriteRepository = favoriteRepository;
         this.growthRepository = growthRepository;
+        this.plantRepository = plantRepository;
     }
 
     public List<User> getAllUsers() {
@@ -74,8 +70,8 @@ public class UserService {
     }
 
     private UserPageDTO mapUserPageDTO(Preferences preferences, User user, List<Favorite> favorites) {
-        return  new UserPageDTO(user.getLogin(), user.getNickName(), favorites, growthRepository.findPlantIdWithMaxMatchingPreferences(
-                preferences.getClimate(), preferences.getSoil(), preferences.getSpace(), preferences.getWater(), preferences.getLandScape()),
+        return  new UserPageDTO(user.getLogin(), user.getNickName(), favorites, plantRepository.getReferenceById(growthRepository.findPlantIdWithMaxMatchingPreferences(
+                preferences.getClimate(), preferences.getSoil(), preferences.getSpace(), preferences.getWater(), preferences.getLandScape())).getName(),
                 preferences.getClimate(), preferences.getSoil(), preferences.getSpace(), preferences.getWater(), preferences.getLandScape());
     }
     public UserPageDTO getUserPageData(Integer id) {
@@ -83,5 +79,10 @@ public class UserService {
         User user = userRepository.getReferenceById(id);
         List<Favorite> favorites = favoriteRepository.getAllFavoriteOfUser(id);
         return mapUserPageDTO(preferences, user, favorites);
+    }
+
+
+    public void updateUserPreferences(Integer id, String climate, String soil, Integer space, String water, String landScape) {
+        prefRepository.changePreference(id, climate, soil, space, water, landScape);
     }
 }

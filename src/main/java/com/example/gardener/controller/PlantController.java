@@ -1,6 +1,9 @@
 package com.example.gardener.controller;
 
+import com.example.gardener.DTO.PlantDTO;
+import com.example.gardener.Entities.Role;
 import com.example.gardener.Entities.User;
+import com.example.gardener.service.EditService;
 import com.example.gardener.service.FavoriteService;
 import com.example.gardener.service.PlantService;
 import jakarta.servlet.http.HttpSession;
@@ -15,15 +18,19 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class PlantController {
     private final PlantService plantService;
     private final FavoriteService favoriteService;
+    private final EditService editService;
 
-    public PlantController(PlantService plantService, FavoriteService favoriteService) {
+    public PlantController(PlantService plantService, FavoriteService favoriteService, EditService editService) {
         this.plantService = plantService;
         this.favoriteService = favoriteService;
+        this.editService = editService;
     }
 
     @GetMapping("/plant/{id}")
     public String showPlant(@PathVariable Integer id, HttpSession httpSession,
                             Model model) {
+
+
 
         model.addAttribute("plant", plantService.getPlantDTO(id));
         // Check if plant is in user's favorites
@@ -51,5 +58,12 @@ public class PlantController {
         favoriteService.addToFavorites(userId, plantId);
         redirectAttributes.addFlashAttribute("message", "Plant added to favorites!");
         return "redirect:/plant/" + plantId;
+    }
+
+    @PostMapping("/plant/{id}/update")
+    public String changePlant(@ModelAttribute("PlantChar") PlantDTO plantDTO) {
+        log.info("try to change plant");
+        editService.updatePlantInfo(plantDTO);
+        return "redirect:/plant/" + plantDTO.getPlantId();
     }
 }

@@ -42,7 +42,7 @@ public class PlantService {
     }
 
     private PlantDTO mapToPlantDTO(Plant plant, Growth growth, BioChar bioChar){
-        return new PlantDTO(plant.getId(), bioChar.getLeafType(), bioChar.getRoot(), bioChar.getFruit(), bioChar.getAmmFruit(),
+        return new PlantDTO(plant.getId(), bioChar.getLeafType(), bioChar.getRoot(), bioChar.getFruit(), bioChar.getAmmFruit().toString(),
                 bioChar.getMorphology(), growth.getPpfd(), growth.getHumidity(), growth.getPh(), growth.getSpace(),
                 growth.getSoil(), growth.getSurvivability(), growth.getGrowthSpeed(), growth.getClimate(), growth.getWater(),
                 growth.getLandScape(), plant.getName(), plant.getScienceName(), plant.getDescription());

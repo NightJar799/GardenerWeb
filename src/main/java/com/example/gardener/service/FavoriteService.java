@@ -1,9 +1,5 @@
 package com.example.gardener.service;
 
-import com.example.gardener.Entities.Favorite;
-import com.example.gardener.Entities.Plant;
-import com.example.gardener.Entities.User;
-import com.example.gardener.Repository.FavoriteRepository;
 import com.example.gardener.Repository.PlantRepository;
 import com.example.gardener.Repository.UserRepository;
 import jakarta.transaction.Transactional;

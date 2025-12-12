@@ -28,7 +28,7 @@ public class UserController {
     public String getUserPage(Model model, HttpSession session) {
         User sessionUser = (User) session.getAttribute("user");
         if (sessionUser == null) {
-            return "redirect:/login";
+            return "redirect:/auth";
         }
 
         UserPageDTO userPageDTO = userService.getUserPageData(sessionUser.getId());
@@ -37,25 +37,25 @@ public class UserController {
         return "user";
     }
 
-//    @PostMapping("/user/preferences/update")
-//    public String updatePreferences(@RequestParam(required = false) String climate,
-//                                    @RequestParam(required = false) String soil,
-//                                    @RequestParam(required = false) Integer space,
-//                                    @RequestParam(required = false) String water,
-//                                    @RequestParam(required = false) String landScape,
-//                                    HttpSession session,
-//                                    RedirectAttributes redirectAttributes) {
-//
-//        User sessionUser = (User) session.getAttribute("user");
-//        if (sessionUser == null) {
-//            return "redirect:/login";
-//        }
-//
-//        userService.updateUserPreferences(sessionUser.getId(), climate, soil, space, water, landScape);
-//
-//        redirectAttributes.addFlashAttribute("message", "Preferences updated successfully!");
-//        return "redirect:/user";
-//    }
+    @PostMapping("/user/preferences/update")
+    public String updatePreferences(@RequestParam(required = false) String climate,
+                                    @RequestParam(required = false) String soil,
+                                    @RequestParam(required = false) Integer space,
+                                    @RequestParam(required = false) String water,
+                                    @RequestParam(required = false) String landScape,
+                                    HttpSession session,
+                                    RedirectAttributes redirectAttributes) {
+
+        User sessionUser = (User) session.getAttribute("user");
+        if (sessionUser == null) {
+            return "redirect:/auth";
+        }
+
+        userService.updateUserPreferences(sessionUser.getId(), climate, soil, space, water, landScape);
+
+        redirectAttributes.addFlashAttribute("message", "Preferences updated successfully!");
+        return "redirect:/user";
+    }
 
     @PostMapping("/favorite/remove")
     public String removeFavorite(@RequestParam Integer plantId,
@@ -65,9 +65,10 @@ public class UserController {
 
         User sessionUser = (User) session.getAttribute("user");
         if (sessionUser == null || !sessionUser.getId().equals(userId)) {
-            return "redirect:/login";
+            return "redirect:/auth";
         }
 
+        log.info("Great cleansing");
         favoriteService.removeFromFavorites(userId, plantId);
         redirectAttributes.addFlashAttribute("message", "Plant removed from favorites!");
         return "redirect:/user";

@@ -20,6 +20,8 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Integer> {
 
     boolean existsByUserIdAndPlantId(Integer userId, Integer plantId);
 
-    @Query(nativeQuery = true, value = "SELECT id_usr, id_plant FROM grd.favorite WHERE favorite.id_usr = :idUser")
-    List<Favorite> getAllFavoriteOfUser(@Param("idUser") Integer id);
+    @Query(nativeQuery = true, value = "SELECT f.id_usr, f.id_plant " +
+            "FROM grd.favorite f " +
+            "WHERE f.id_usr = :idUser")
+    List<Favorite> getAllFavoriteOfUser(@Param("idUser") Integer idUser);
 }

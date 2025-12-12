@@ -15,7 +15,7 @@ public class UserPageDTO {
     private String email;
     private String nickname;
     private List<Favorite> favorite;
-    private Integer plant;
+    private String plant;
     private String climate;
     private String soil;
     private Integer space;

@@ -182,9 +182,8 @@
                 <td>
                     <select id="ammFruit" name="ammFruit" style="width: 100%; padding: 5px;">
                         <option value="">Select</option>
-                        <option value="A" th:selected="${plant.ammFruit == 'A'}">Annual</option>
-                        <option value="P" th:selected="${plant.ammFruit == 'P'}">Perennial</option>
-                        <option value="B" th:selected="${plant.ammFruit == 'B'}">Biennial</option>
+                        <option value="Y" th:selected="${plant.ammFruit == 'Y'}">Annual</option>
+                        <option value="N" th:selected="${plant.ammFruit == 'N'}">Perennial</option>
                     </select>
                 </td>
             </tr>
@@ -198,10 +197,10 @@
                 <td>
                     <select id="growthSpeed" name="growthSpeed" style="width: 100%; padding: 5px;">
                         <option value="">Select</option>
-                        <option value="slow" th:selected="${plant.growthSpeed == 'slow'}">Slow</option>
-                        <option value="medium" th:selected="${plant.growthSpeed == 'medium'}">Medium</option>
-                        <option value="fast" th:selected="${plant.growthSpeed == 'fast'}">Fast</option>
-                        <option value="very fast" th:selected="${plant.growthSpeed == 'very fast'}">Very Fast</option>
+                        <option value="Slow" th:selected="${plant.growthSpeed == 'Slow'}">Slow</option>
+                        <option value="Mid" th:selected="${plant.growthSpeed == 'Mid'}">Medium</option>
+                        <option value="Fast" th:selected="${plant.growthSpeed == 'Fast'}">Fast</option>
+                        <option value="VFast" th:selected="${plant.growthSpeed == 'VFast'}">Very Fast</option>
                     </select>
                 </td>
             </tr>
@@ -210,10 +209,10 @@
                 <td>
                     <select id="survivability" name="survivability" style="width: 100%; padding: 5px;">
                         <option value="">Select</option>
-                        <option value="low" th:selected="${plant.survivability == 'low'}">Low</option>
-                        <option value="medium" th:selected="${plant.survivability == 'medium'}">Medium</option>
-                        <option value="high" th:selected="${plant.survivability == 'high'}">High</option>
-                        <option value="very high" th:selected="${plant.survivability == 'very high'}">Very High</option>
+                        <option value="Low" th:selected="${plant.survivability == 'Low'}">Low</option>
+                        <option value="Mid" th:selected="${plant.survivability == 'Mid'}">Medium</option>
+                        <option value="High" th:selected="${plant.survivability == 'High'}">High</option>
+                        <option value="Very High" th:selected="${plant.survivability == 'Very High'}">Very High</option>
                     </select>
                 </td>
                 <td><label for="space"><strong>Required Space (m²):</strong></label></td>
