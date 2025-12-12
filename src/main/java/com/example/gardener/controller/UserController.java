@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Arrays;
+
 @Slf4j
 @Controller
 public class UserController {
@@ -33,6 +35,12 @@ public class UserController {
 
         UserPageDTO userPageDTO = userService.getUserPageData(sessionUser.getId());
         model.addAttribute("user", userPageDTO);
+
+        model.addAttribute("climateOptions", Arrays.asList("tropical", "dry", "temperate", "continental", "polar"));
+        model.addAttribute("soilOptions", Arrays.asList("sandy", "peaty", "loamy", "silty", "clay", "chalky"));
+        model.addAttribute("spaceOptions", Arrays.asList(10, 25, 50, 100, 250));
+        model.addAttribute("waterOptions", Arrays.asList("none", "lake", "river", "sea/ocean"));
+        model.addAttribute("landscapeOptions", Arrays.asList("mountain", "forest", "steppe", "tundra", "sandy", "hilly"));
 
         return "user";
     }

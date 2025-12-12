@@ -4,6 +4,8 @@ import com.example.gardener.Repository.PlantRepository;
 import com.example.gardener.Repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,10 @@ public class FavoriteService {
     }
 
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "userPage", key = "#userId"),
+            @CacheEvict(value = "plantDetails", key = "#plantId")
+    })
     public void addToFavorites(Integer userId, Integer plantId) {
         if (!isPlantInFavorites(userId, plantId)) {
             String sql = "INSERT INTO grd.favorite (id_usr, id_plant) VALUES (?, ?)";
@@ -32,6 +38,10 @@ public class FavoriteService {
     }
 
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "userPage", key = "#userId"),
+            @CacheEvict(value = "plantDetails", key = "#plantId")
+    })
     public void removeFromFavorites(Integer userId, Integer plantId) {
         String sql = "DELETE FROM grd.favorite WHERE id_usr = ? AND id_plant = ?";
         jdbcTemplate.update(sql, userId, plantId);

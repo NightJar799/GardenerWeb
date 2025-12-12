@@ -2,7 +2,6 @@ package com.example.gardener.Repository;
 
 import com.example.gardener.Entities.User;
 import org.springframework.data.jpa.repository.NativeQuery;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 

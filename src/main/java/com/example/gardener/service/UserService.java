@@ -8,10 +8,14 @@ import com.example.gardener.Entities.User;
 import com.example.gardener.Repository.*;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -19,7 +23,7 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     private final UserRepository userRepository;
-    private  final PrefRepository prefRepository;
+    private final PrefRepository prefRepository;
     private final EntityManager entityManager;
     private final FavoriteRepository favoriteRepository;
     private final GrowthRepository growthRepository;
@@ -46,18 +50,28 @@ public class UserService {
         return passwordsAndLogins;
     }
 
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "users", allEntries = true),
+                    @CacheEvict(value = "userByLogin", key = "#user.login")
+            }
+    )
     public User addUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
+    @CacheEvict(value = "userPreferences", key = "#preferences.user.id")
     public Preferences addNewPreference(Preferences preferences) {
         return entityManager.merge(preferences);
     }
 
+    @Cacheable(value = "userByLogin", key = "#login", unless = "#result == null")
     public User getUserIdByLogin(String login) {
         return userRepository.findUserIdByLogin(login);
     }
+
+    @Cacheable(value = "userByName", key = "#name", unless = "#result == null")
     public User getUserByNickname(String name) {
         return userRepository.findUserByName(name);
     }
@@ -70,10 +84,34 @@ public class UserService {
     }
 
     private UserPageDTO mapUserPageDTO(Preferences preferences, User user, List<Favorite> favorites) {
-        return  new UserPageDTO(user.getLogin(), user.getNickName(), favorites, plantRepository.getReferenceById(growthRepository.findPlantIdWithMaxMatchingPreferences(
-                preferences.getClimate(), preferences.getSoil(), preferences.getSpace(), preferences.getWater(), preferences.getLandScape())).getName(),
-                preferences.getClimate(), preferences.getSoil(), preferences.getSpace(), preferences.getWater(), preferences.getLandScape());
+        List<Integer> favoritePlantIds = favorites.stream()
+                .map(favorite -> favorite.getPlant().getId())
+                .collect(Collectors.toList());
+
+        Integer recommendedPlantId = growthRepository.findPlantIdWithMaxMatchingPreferences(
+                preferences.getClimate(), preferences.getSoil(), preferences.getSpace(),
+                preferences.getWater(), preferences.getLandScape());
+
+        String recommendedPlantName = recommendedPlantId != null ?
+                plantRepository.findById(recommendedPlantId)
+                        .map(plant -> plant.getName())
+                        .orElse("No recommendation") :
+                "No recommendation";
+
+        return new UserPageDTO(
+                user.getLogin(),
+                user.getNickName(),
+                favoritePlantIds,
+                recommendedPlantName,
+                preferences.getClimate(),
+                preferences.getSoil(),
+                preferences.getSpace(),
+                preferences.getWater(),
+                preferences.getLandScape()
+        );
     }
+
+    @Cacheable(value = "userPage", key = "#id", unless = "#result == null")
     public UserPageDTO getUserPageData(Integer id) {
         Preferences preferences = prefRepository.getReferenceById(id);
         User user = userRepository.getReferenceById(id);
@@ -81,7 +119,7 @@ public class UserService {
         return mapUserPageDTO(preferences, user, favorites);
     }
 
-
+    @CacheEvict(value = {"userPage", "userPreferences"}, key = "#id")
     public void updateUserPreferences(Integer id, String climate, String soil, Integer space, String water, String landScape) {
         prefRepository.changePreference(id, climate, soil, space, water, landScape);
     }

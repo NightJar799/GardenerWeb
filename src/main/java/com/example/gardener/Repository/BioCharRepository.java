@@ -1,7 +1,6 @@
 package com.example.gardener.Repository;
 
 import com.example.gardener.Entities.BioChar;
-import com.example.gardener.Entities.Plant;
 import io.lettuce.core.dynamic.annotation.Param;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;

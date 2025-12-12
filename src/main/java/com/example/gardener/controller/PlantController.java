@@ -1,7 +1,6 @@
 package com.example.gardener.controller;
 
 import com.example.gardener.DTO.PlantDTO;
-import com.example.gardener.Entities.Role;
 import com.example.gardener.Entities.User;
 import com.example.gardener.service.EditService;
 import com.example.gardener.service.FavoriteService;
@@ -33,7 +32,6 @@ public class PlantController {
 
 
         model.addAttribute("plant", plantService.getPlantDTO(id));
-        // Check if plant is in user's favorites
         if (httpSession.getAttribute("user") != null) {
             log.info("NOT NULL");
             log.info(((User)httpSession.getAttribute("user")).getAuthorities().toString());
@@ -65,5 +63,12 @@ public class PlantController {
         log.info("try to change plant");
         editService.updatePlantInfo(plantDTO);
         return "redirect:/plant/" + plantDTO.getPlantId();
+    }
+
+    @PostMapping("plant/{id}/delete")
+    public String deletePlant(@PathVariable("id") Integer id) {
+        log.info("delete plant " + id);
+        editService.deletePlantById(id);
+        return "redirect:/main";
     }
 }

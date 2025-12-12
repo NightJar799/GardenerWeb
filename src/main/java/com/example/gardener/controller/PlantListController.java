@@ -2,11 +2,9 @@ package com.example.gardener.controller;
 
 import com.example.gardener.DTO.PlantListDTO;
 import com.example.gardener.DTO.TestDTO;
-import com.example.gardener.Entities.Preferences;
 import com.example.gardener.Entities.User;
 import com.example.gardener.service.PlantService;
 import com.example.gardener.service.PreferencesService;
-import com.example.gardener.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
