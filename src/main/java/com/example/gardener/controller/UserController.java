@@ -94,8 +94,13 @@ public class UserController {
     }
 
     @PostMapping("user/addPlant")
-    public String getAddPlant(@ModelAttribute("plant") PlantDTO plantDTO) {
+    public String getAddPlant(@ModelAttribute("plant") PlantDTO plantDTO, Model model) {
         log.info(plantDTO.getName());
+        if (!editService.isPlantDTOFull(plantDTO)) {
+            log.info("Problem Fields");
+            model.addAttribute("errorAdd", true);
+            return "addPlant";
+        }
         editService.addPlant(plantDTO);
         return "redirect:/main";
     }

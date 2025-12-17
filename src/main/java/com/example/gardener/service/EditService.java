@@ -12,9 +12,11 @@ import com.example.gardener.Repository.PlantRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Controller;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 @Slf4j
@@ -47,9 +49,9 @@ public class EditService {
 
     @Transactional
     @Caching(evict = {
-            @CacheEvict(value = "plantDetails", key = "#plantId"),
+//            @CacheEvict(value = "plantDetails", key = "#plantId"),
             @CacheEvict(value = "allPlants", allEntries = true),
-            @CacheEvict(value = "userPage", allEntries = true) // Очищаем кэш пользователей т.к. меняются избранные
+            @CacheEvict(value = "userPage", allEntries = true)
     })
     public void addPlant(PlantDTO plantDTO) {
         Plant plant = plantRepository.save(mapPlantDTOtoPlant(plantDTO));
@@ -81,7 +83,7 @@ public class EditService {
     @Caching(evict = {
             @CacheEvict(value = "plantDetails", key = "#plantId"),
             @CacheEvict(value = "allPlants", allEntries = true),
-            @CacheEvict(value = "userPage", allEntries = true) // Очищаем кэш пользователей т.к. меняются избранные
+            @CacheEvict(value = "userPage", allEntries = true)
     })
     public boolean deletePlantById(Integer plantId) {
         try {
@@ -112,5 +114,25 @@ public class EditService {
         } catch (Exception e) {
             throw new RuntimeException("Не удалось удалить растение: " + e.getMessage(), e);
         }
+    }
+
+    public boolean isPlantDTOFull(Object plantDTO) {
+        for(Field field : plantDTO.getClass().getDeclaredFields()) {
+            if (field.getName().equals("plantId")) continue;
+            field.setAccessible(true);
+            log.info(field.getName());
+            try {
+                log.info("first");
+                if (field.get(plantDTO) == null) return false;
+                log.info("second");
+                if (field.getType() == String.class && ((String) field.get(plantDTO)).isEmpty()) {
+                    return false;
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+        return true;
     }
 }

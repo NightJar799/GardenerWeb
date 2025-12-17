@@ -19,13 +19,6 @@
     </div>
 </div>
 
-<div style="margin-bottom: 20px;">
-    <a th:href="@{/user}" th:if="${session.user != null}">
-        User Page
-    </a>
-    <a href="#" th:unless="${plantList != null and !plantList.isEmpty()}">Back to User Page</a>
-</div>
-
 <h1>Plant List</h1>
 <a th:href="@{/main}">Clear Sort</a>
 
