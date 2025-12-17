@@ -12,6 +12,20 @@
     <a href="#" th:unless="${plantList != null and !plantList.isEmpty()}">Back to User Page</a>
 </div>
 
+<div class="popular-plants" th:if="${popularPlants != null and !popularPlants.isEmpty()}">
+    <h3>Most popular plants:</h3>
+    <div th:each="plantName : ${popularPlants}">
+        <span class="plant-tag" th:text="${plantName}"></span>
+    </div>
+</div>
+
+<div style="margin-bottom: 20px;">
+    <a th:href="@{/user}" th:if="${session.user != null}">
+        User Page
+    </a>
+    <a href="#" th:unless="${plantList != null and !plantList.isEmpty()}">Back to User Page</a>
+</div>
+
 <h1>Plant List</h1>
 <a th:href="@{/main}">Clear Sort</a>
 

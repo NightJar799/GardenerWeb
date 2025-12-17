@@ -40,6 +40,8 @@ public class PlantListController {
         User user = (User) httpSession.getAttribute("user");
         log.info(user.getLogin());
         if (user.getLogin() == null) return "redirect:/auth";
+        List<String> popularPlants = plantService.getTop3PopularPlantNames();
+        model.addAttribute("popularPlants", popularPlants);
         if (redisTemplate.opsForList().indexOf("newUsers", user.getLogin()) == null) {
             List<PlantListDTO> plants = plantService.getPlantAllForListDTO();
             switch (sortBy) {

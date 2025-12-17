@@ -56,9 +56,10 @@ public class UserService {
                     @CacheEvict(value = "userByLogin", key = "#user.login")
             }
     )
-    public User addUser(User user) {
+    public Boolean addUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+        userRepository.save(user);
+        return true;
     }
 
     @CacheEvict(value = "userPreferences", key = "#preferences.user.id")

@@ -82,7 +82,7 @@ public class SecurityConfig {
     public AccessDeniedHandler accessDeniedHandler() {
         return (request, response, accessDeniedException) -> {
             log.error("=== ACCESS DENIED ===");
-            request.getSession().setAttribute("AuthError", true);
+            //request.getSession().setAttribute("AuthError", true);
             response.sendRedirect("/auth");
         };
     }

@@ -36,10 +36,18 @@ public class RegController {
     }
 
     @PostMapping("/reg")
-    public String registry(@ModelAttribute RegisterDTO registerDTO, Model model) {
+    public String registry(@ModelAttribute("reg") RegisterDTO registerDTO, Model model) {
         log.debug("Попытка Регистрации");
+        if (registerDTO.getEmail().split("@").length != 2) {
+            model.addAttribute("emailError", true);
+            return "registry";
+        }
         if (!registerDTO.getPassword().equals(registerDTO.getPasswordCheck())) {
             model.addAttribute("passwordError", true);
+            return "registry";
+        }
+        if (!registerDTO.getPhone().matches("^\\+?[1-9]\\d{1,14}$")) {
+            model.addAttribute("phoneError", true);
             return "registry";
         }
         redisTemplate.opsForList().leftPush("newUsers", registerDTO.getEmail());

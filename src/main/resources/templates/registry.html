@@ -17,6 +17,10 @@
                th:field="*{email}"/>
     </p>
 
+    <p th:if="${emailError != null}" style="color: red">
+        Wrong Email!
+    </p>
+
     <p>
         <label for="password">Password: </label>
         <input type="password"
@@ -46,6 +50,10 @@
                id="phone"
                name="phone"
                th:field="*{phone}"/>
+    </p>
+
+    <p th:if="${phoneError != null}" style="color: red">
+        Wrong Phone!
     </p>
 
     <p>

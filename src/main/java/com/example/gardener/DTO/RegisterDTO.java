@@ -1,17 +1,24 @@
 package com.example.gardener.DTO;
 
+
 import com.example.gardener.utils.validation.UniqueEmail;
 import com.example.gardener.utils.validation.UniquePhone;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
 public class RegisterDTO {
-    @UniqueEmail
+    @NotBlank(message = "Email не может быть пустым")
+    @Email(message = "Некорректный формат email")
+    @UniqueEmail(message = "Email уже используется")
     private String email;
+    @NotBlank(message = "Пароль не может быть пустым")
     private String password;
+    @NotBlank(message = "Подтверждение пароля не может быть пустым")
     private String passwordCheck;
-    @UniquePhone
+    @NotBlank(message = "Телефон не может быть пустым")
+    @Pattern(regexp = "^\\+?[1-9]\\d{1,14}$", message = "Некорректный формат телефона")
+    @UniquePhone(message = "Телефон уже используется")
     private String phone;
     private String nickname;
 

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class PlantService {
@@ -69,5 +70,16 @@ public class PlantService {
                     Objects.requireNonNull(getPlantFromList(growth.getId(), plantList))));
         }
         return plantListDTOS;
+    }
+
+    @Cacheable(value = "popularPlants", key = "'top3'")
+    public List<String> getTop3PopularPlantNames() {
+        // Находим 3 самых популярных растения по количеству добавлений в избранное
+
+        List<Object[]> results = plantRepository.findTop3PopularPlants();
+
+        return results.stream()
+                .map(row -> (String) row[0]) // Извлекаем имя растения
+                .collect(Collectors.toList());
     }
 }
