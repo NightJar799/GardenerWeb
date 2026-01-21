@@ -4,7 +4,9 @@ import com.example.gardener.DTO.PlantDTO;
 import com.example.gardener.DTO.PlantListDTO;
 import com.example.gardener.Entities.*;
 import com.example.gardener.Repository.*;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -72,9 +74,8 @@ public class PlantService {
         return plantListDTOS;
     }
 
-    @Cacheable(value = "popularPlants", key = "'top3'")
+    @Caching(evict = {@CacheEvict(value = "popularPlants", allEntries = true)})
     public List<String> getTop3PopularPlantNames() {
-        // Находим 3 самых популярных растения по количеству добавлений в избранное
 
         List<Object[]> results = plantRepository.findTop3PopularPlants();
 

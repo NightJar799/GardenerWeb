@@ -45,6 +45,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/auth", "/auth/**", "/reg", "/reg/**")
                         .permitAll()
+                        .requestMatchers("user/addPlant", "user/addPlant/**")
+                        .hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/auth")
