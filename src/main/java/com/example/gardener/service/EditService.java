@@ -12,15 +12,14 @@ import com.example.gardener.Repository.PlantRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
 import java.util.List;
 
 @Slf4j
-@Controller
+@Service
 public class EditService {
     private final BioCharRepository bioCharRepository;
     private final PlantRepository plantRepository;
