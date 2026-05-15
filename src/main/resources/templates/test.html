@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymyleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>Test for new user!</title>
+</head>
+<body>
+<form method="post" action="/test" th:object="${test}">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+    <h2>Choose climate type</h2>
+    <div th:each="climateOption : ${T(com.example.gardener.DTO.TestDTO).getClimateOptions()}">
+        <p>
+            <input type="radio" th:value="${climateOption}"
+                   th:field="*{climate}"
+                   th:id="${'climate_' + climateOption}"/>
+            <label th:for="${'climate_' + climateOption}" th:text="${climateOption}"></label>
+        </p>
+    </div>
+
+    <h2>Choose soil type</h2>
+    <div th:each="soilOption : ${T(com.example.gardener.DTO.TestDTO).getSoilOptions()}">
+        <p>
+            <input type="radio" th:value="${soilOption}"
+                   th:field="*{soil}"
+                   th:id="${'soil_' + soilOption}"/>
+            <label th:for="${'soil_' + soilOption}" th:text="${soilOption}"></label>
+        </p>
+    </div>
+
+    <h2>Choose space capacity in square centimeters</h2>
+    <div th:each="spaceOption : ${T(com.example.gardener.DTO.TestDTO).getSpaceOptions()}">
+        <p>
+            <input type="radio" th:value="${spaceOption}"
+                   th:field="*{space}"
+                   th:id="${'space_' + spaceOption}"/>
+            <label th:for="${'space_' + spaceOption}" th:text="${spaceOption}"></label>
+        </p>
+    </div>
+
+    <h2>Choose water capacity</h2>
+    <div th:each="waterOption : ${T(com.example.gardener.DTO.TestDTO).getWaterOptions()}">
+        <p>
+            <input type="radio" th:value="${waterOption}"
+                   th:field="*{water}"
+                   th:id="${'water_' + waterOption}"/>
+            <label th:for="${'water_' + waterOption}" th:text="${waterOption}"></label>
+        </p>
+    </div>
+
+    <h2>Choose landscape</h2>
+    <div th:each="landscapeOption : ${T(com.example.gardener.DTO.TestDTO).getLandscapeOptions()}">
+        <p>
+            <input type="radio" th:value="${landscapeOption}"
+                   th:field="*{landScape}"
+                   th:id="${'landscape_' + landscapeOption}"/>
+            <label th:for="${'landscape_' + landscapeOption}" th:text="${landscapeOption}"></label>
+        </p>
+    </div>
+
+    <p><button type="submit">Отправить</button></p>
+</form>
+</body>
+</html>
